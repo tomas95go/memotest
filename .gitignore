@@ -1,3 +1,5 @@
+#Doc
+*.docx
 # Logs
 logs
 *.log
