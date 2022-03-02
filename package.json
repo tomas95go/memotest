@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/tomas95go/memotest#readme",
   "devDependencies": {
+    "cypress": "^9.5.1",
     "tailwindcss": "^3.0.23"
   },
   "dependencies": {
