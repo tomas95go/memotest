@@ -1,5 +1,5 @@
 module.exports = {
-  content: ['./index.html'],
+  content: ['./index.html', 'about.html', './memotest.js'],
   presets: [],
   darkMode: 'media', // or 'class'
   theme: {
@@ -38,6 +38,12 @@ module.exports = {
       fuchsia: colors.fuchsia,
       pink: colors.pink,
       rose: colors.rose,
+      russian: '#10002B',
+      russianb: '#240046',
+      mauve: '#E0AAFF',
+      heliotrope: '#C77DFF',
+      persiani: '#3C096C',
+      amethyst: '#9D4EDD',
     }),
     columns: {
       auto: 'auto',

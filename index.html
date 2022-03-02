@@ -5,10 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/dist/output.css" rel="stylesheet" />
+    <link href="/node_modules/animate.css/animate.css" rel="stylesheet" />
     <title>Memotest</title>
   </head>
-  <body class="bg-gray-500">
-    <h1 class="text-red-600">as</h1>
+  <body class="bg-russian h-screen">
+    <div class="container mx-auto h-full">
+      <div class="flex flex-col h-full">
+        <div class="m-auto">
+          <h1 class="text-7xl text-heliotrope">Memotest</h1>
+        </div>
+        <div class="grid grid-cols-2 justify-items-center align-items-center">
+          <span class="text-3xl text-mauve">Current lvl</span>
+          <span class="text-3xl text-mauve">Pairs</span>
+          <span id="current-level" class="text-3xl text-mauve"></span>
+          <span id="current-pairs" class="text-3xl text-mauve"></span>
+        </div>
+        <div
+          class="fighters-cards-container m-auto grid gap-4 grid-cols-4 justify-items-center align-items-center"
+        ></div>
+      </div>
+    </div>
     <script src="./memotest.js"></script>
   </body>
 </html>
