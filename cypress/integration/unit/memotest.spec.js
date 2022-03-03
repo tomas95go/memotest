@@ -1,4 +1,10 @@
-import { getGameData, updateGameData, incrementLevel } from '/memotest';
+import {
+  getGameData,
+  updateGameData,
+  incrementLevel,
+  getRandomFighter,
+  formPairs,
+} from '/memotest';
 
 describe('Unit testing', function () {
   context('memotest.js', function () {
@@ -36,6 +42,67 @@ describe('Unit testing', function () {
       expect(memotest.lvl).to.eq(2);
       expect(memotest.cards).to.eq(12);
       expect(memotest.pairs).to.eq(6);
+    });
+
+    it('Should get a random fighter', function () {
+      const fighters = [
+        'Gouki',
+        'Balrog',
+        'Blanka',
+        'Cammy',
+        'Chun-li',
+        'Deejay',
+        'Dhalsim',
+        'Ehonda',
+        'Feilong',
+        'Guile',
+        'Ken',
+        'Mbison',
+        'Ryu',
+        'Sagat',
+        'Thawk',
+        'Vega',
+        'Zangief',
+      ];
+
+      const randomFighter = getRandomFighter(fighters);
+
+      expect(fighters).to.include(randomFighter);
+    });
+
+    it('Should generate pairs of fighters', function () {
+      const memotest = {
+        lvl: 1,
+        cards: 8,
+        pairs: 4,
+        fighters: [
+          'Gouki',
+          'Balrog',
+          'Blanka',
+          'Cammy',
+          'Chun-li',
+          'Deejay',
+          'Dhalsim',
+          'Ehonda',
+          'Feilong',
+          'Guile',
+          'Ken',
+          'Mbison',
+          'Ryu',
+          'Sagat',
+          'Thawk',
+          'Vega',
+          'Zangief',
+        ],
+      };
+
+      const fighterPairs = formPairs(memotest.fighters, memotest.cards);
+
+      expect(fighterPairs).to.have.lengthOf(memotest.cards);
+
+      const fighters = [...new Set(fighterPairs)];
+
+      expect(fighterPairs).include.members(fighters);
     });
   });
 });

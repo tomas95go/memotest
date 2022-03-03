@@ -4,6 +4,7 @@ window.onload = () => {
   const memotest = getGameData();
   displayCurrentLVL(memotest.lvl);
   displayPairs(memotest.pairs);
+  const fighterPairs = formPairs(memotest.fighters, memotest.cards);
 };
 
 export const getGameData = () => {
@@ -11,6 +12,25 @@ export const getGameData = () => {
     lvl: 1,
     cards: 8,
     pairs: 4,
+    fighters: [
+      'Gouki',
+      'Balrog',
+      'Blanka',
+      'Cammy',
+      'Chun-li',
+      'Deejay',
+      'Dhalsim',
+      'Ehonda',
+      'Feilong',
+      'Guile',
+      'Ken',
+      'Mbison',
+      'Ryu',
+      'Sagat',
+      'Thawk',
+      'Vega',
+      'Zangief',
+    ],
   };
   return memotest;
 };
@@ -39,55 +59,28 @@ export const displayPairs = (pairs) => {
   $currentPairs.textContent = pairs;
 };
 
-/*const currentLVL = 1;
-
-const currentCards = 12;
-
-const currentPairs = currentCards / 2;
-
-const fighters = [
-  'Gouki',
-  'Balrog',
-  'Blanka',
-  'Cammy',
-  'Chun-li',
-  'Deejay',
-  'Dhalsim',
-  'Ehonda',
-  'Feilong',
-  'Guile',
-  'Ken',
-  'Mbison',
-  'Ryu',
-  'Sagat',
-  'Thawk',
-  'Vega',
-  'Zangief',
-];
-
-const randomFighters = [];
-
-const getRandomFighters = (fighters) => {
-  const randomFighter = fighters[Math.floor(Math.random() * fighters.length)];
-  fighters.splice(fighters.indexOf(randomFighter), 1);
-  return randomFighter;
+export const getRandomFighter = (fighters) => {
+  const randomFighters =
+    fighters[Math.floor(Math.random() * (fighters.length - 1))];
+  return randomFighters;
 };
 
-const checkExistence = (fighter) => {
-  const isPresent = randomFighters.find((el) => el === fighter) ? true : false;
-  return isPresent;
-};
+export const formPairs = (fighters, cardsQty) => {
+  const fighterPairs = [];
 
-for (let i = 0; i < currentPairs; i++) {
-  const randomFighter = getRandomFighters(fighters);
-  const isPresent = checkExistence(randomFighter);
-  if (!isPresent) {
-    for (let j = 0; j < 2; j++) {
-      randomFighters.push(randomFighter);
+  while (fighterPairs.length < cardsQty) {
+    const randomFighter = getRandomFighter(fighters);
+    const isPresent = fighterPairs.find((fighter) => fighter === randomFighter);
+    if (!isPresent) {
+      fighterPairs.push(randomFighter);
+      fighterPairs.push(randomFighter);
     }
   }
-}
 
+  return fighterPairs;
+};
+
+/*
 function shuffle(array) {
   let m = array.length;
   let t;
