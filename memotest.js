@@ -2,7 +2,8 @@
 
 window.onload = () => {
   const memotest = getGameData();
-  console.log(memotest);
+  displayCurrentLVL(memotest.lvl);
+  displayPairs(memotest.pairs);
 };
 
 export const getGameData = () => {
@@ -27,6 +28,17 @@ export const incrementLevel = (memotest) => {
   memotest.pairs = memotest.cards / 2;
   return memotest;
 };
+
+export const displayCurrentLVL = (lvl) => {
+  const $currentLVL = document.getElementById('current-level');
+  $currentLVL.textContent = lvl;
+};
+
+export const displayPairs = (pairs) => {
+  const $currentPairs = document.getElementById('current-pairs');
+  $currentPairs.textContent = pairs;
+};
+
 /*const currentLVL = 1;
 
 const currentCards = 12;
