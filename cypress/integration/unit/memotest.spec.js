@@ -4,6 +4,11 @@ import {
   incrementLevel,
   getRandomFighter,
   formPairs,
+  getPlayerData,
+  validateTemporaryPairLength,
+  addCardToTemporaryPair,
+  resetTemporaryPair,
+  validateTemporaryPairMatch,
 } from '/memotest';
 
 describe('Unit testing', function () {
@@ -103,6 +108,46 @@ describe('Unit testing', function () {
       const fighters = [...new Set(fighterPairs)];
 
       expect(fighterPairs).include.members(fighters);
+    });
+
+    it('Should get player data', function () {
+      const player = getPlayerData();
+
+      expect(player.correctPairs).to.have.lengthOf(0);
+
+      expect(player.temporaryPair).to.have.lengthOf(0);
+    });
+
+    it('Should validate temporary pair length', function () {
+      const temporaryPair = ['Cammy', 'Cammy'];
+
+      const isValid = validateTemporaryPairLength(temporaryPair);
+
+      expect(isValid).to.be.true;
+    });
+
+    it('Should add a card to the temporary pair', function () {
+      const temporaryPair = [];
+
+      addCardToTemporaryPair('Ryu', temporaryPair);
+
+      expect(temporaryPair).to.have.lengthOf(1);
+    });
+
+    it('Should reset temporary pair', function () {
+      const temporaryPair = ['Ryu', 'Guille'];
+
+      resetTemporaryPair(temporaryPair);
+
+      expect(temporaryPair).to.have.lengthOf(0);
+    });
+
+    it('Should check match of a pair', function () {
+      const temporaryPair = ['Sagat', 'Sagat'];
+
+      const isValid = validateTemporaryPairMatch(temporaryPair);
+
+      expect(isValid).to.be.true;
     });
   });
 });

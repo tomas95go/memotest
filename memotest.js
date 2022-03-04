@@ -80,6 +80,36 @@ export const formPairs = (fighters, cardsQty) => {
   return fighterPairs;
 };
 
+export const getPlayerData = () => {
+  const player = {
+    correctPairs: [],
+    temporaryPair: [],
+  };
+
+  return player;
+};
+
+export const validateTemporaryPairLength = (temporaryPair) => {
+  const isValid = temporaryPair.length < 3 ? true : false;
+  return isValid;
+};
+
+export const addCardToTemporaryPair = (card, temporaryPair) => {
+  temporaryPair.push(card);
+  return temporaryPair;
+};
+
+export const resetTemporaryPair = (temporaryPair) => {
+  temporaryPair.length = 0;
+  return temporaryPair;
+};
+
+export const validateTemporaryPairMatch = (temporaryPair) => {
+  const fighter = temporaryPair[0];
+  const isMatch = temporaryPair.every((element) => fighter === element);
+  return isMatch;
+};
+
 /*
 function shuffle(array) {
   let m = array.length;
