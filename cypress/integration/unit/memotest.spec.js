@@ -7,8 +7,9 @@ import {
   getPlayerData,
   validateTemporaryPairLength,
   addCardToTemporaryPair,
-  resetTemporaryPair,
+  resetPair,
   validateTemporaryPairMatch,
+  addTemporaryPairToCorrectPairs,
 } from '/memotest';
 
 describe('Unit testing', function () {
@@ -101,7 +102,7 @@ describe('Unit testing', function () {
         ],
       };
 
-      const fighterPairs = formPairs(memotest.fighters, memotest.cards);
+      const fighterPairs = formPairs(memotest.fighters, [], memotest.cards);
 
       expect(fighterPairs).to.have.lengthOf(memotest.cards);
 
@@ -123,7 +124,7 @@ describe('Unit testing', function () {
 
       const isValid = validateTemporaryPairLength(temporaryPair);
 
-      expect(isValid).to.be.true;
+      expect(isValid).to.be.false;
     });
 
     it('Should add a card to the temporary pair', function () {
@@ -137,7 +138,7 @@ describe('Unit testing', function () {
     it('Should reset temporary pair', function () {
       const temporaryPair = ['Ryu', 'Guille'];
 
-      resetTemporaryPair(temporaryPair);
+      resetPair(temporaryPair);
 
       expect(temporaryPair).to.have.lengthOf(0);
     });
@@ -148,6 +149,16 @@ describe('Unit testing', function () {
       const isValid = validateTemporaryPairMatch(temporaryPair);
 
       expect(isValid).to.be.true;
+    });
+
+    it('Should merge 2 arrays', function () {
+      const temporaryPair = ['Sagat', 'Sagat'];
+
+      const correctPairs = [];
+
+      addTemporaryPairToCorrectPairs(temporaryPair, correctPairs);
+
+      expect(correctPairs).to.have.lengthOf(2);
     });
   });
 });

@@ -4,7 +4,24 @@ window.onload = () => {
   const memotest = getGameData();
   displayCurrentLVL(memotest.lvl);
   displayPairs(memotest.pairs);
-  const fighterPairs = formPairs(memotest.fighters, memotest.cards);
+  formPairs(memotest.fighters, memotest.fighterPairs, memotest.cards);
+  displayCards(memotest.fighterPairs);
+  const $cardContainer = document.querySelectorAll('.card-container');
+  const player = getPlayerData();
+  $cardContainer.forEach((card) => {
+    card.addEventListener(
+      'click',
+      (event) => {
+        registerPlayerAction(
+          event,
+          memotest.fighterPairs,
+          player.temporaryPair,
+          player.correctPairs
+        );
+      },
+      false
+    );
+  });
 };
 
 export const getGameData = () => {
@@ -31,6 +48,7 @@ export const getGameData = () => {
       'Vega',
       'Zangief',
     ],
+    fighterPairs: [],
   };
   return memotest;
 };
@@ -65,9 +83,7 @@ export const getRandomFighter = (fighters) => {
   return randomFighters;
 };
 
-export const formPairs = (fighters, cardsQty) => {
-  const fighterPairs = [];
-
+export const formPairs = (fighters, fighterPairs, cardsQty) => {
   while (fighterPairs.length < cardsQty) {
     const randomFighter = getRandomFighter(fighters);
     const isPresent = fighterPairs.find((fighter) => fighter === randomFighter);
@@ -90,7 +106,7 @@ export const getPlayerData = () => {
 };
 
 export const validateTemporaryPairLength = (temporaryPair) => {
-  const isValid = temporaryPair.length < 3 ? true : false;
+  const isValid = temporaryPair.length < 2 ? true : false;
   return isValid;
 };
 
@@ -99,15 +115,91 @@ export const addCardToTemporaryPair = (card, temporaryPair) => {
   return temporaryPair;
 };
 
-export const resetTemporaryPair = (temporaryPair) => {
-  temporaryPair.length = 0;
-  return temporaryPair;
+export const resetPair = (pair) => {
+  pair.length = 0;
+  return pair;
 };
 
 export const validateTemporaryPairMatch = (temporaryPair) => {
   const fighter = temporaryPair[0];
   const isMatch = temporaryPair.every((element) => fighter === element);
   return isMatch;
+};
+
+export const addTemporaryPairToCorrectPairs = (temporaryPair, correctPairs) => {
+  correctPairs.push(...temporaryPair);
+  return correctPairs;
+};
+
+export const registerPlayerAction = (
+  event,
+  fighterPairs,
+  temporaryPair,
+  correctPairs
+) => {
+  const isValid = validateTemporaryPairLength(temporaryPair);
+
+  const fighter = event.currentTarget.dataset.fighter;
+
+  if (isValid) {
+    addCardToTemporaryPair(fighter, temporaryPair);
+
+    if (temporaryPair.length === 2) {
+      const isMatch = validateTemporaryPairMatch(temporaryPair);
+
+      if (isMatch) {
+        addTemporaryPairToCorrectPairs(temporaryPair);
+      } else {
+        resetPair(temporaryPair);
+      }
+    }
+  } else {
+    resetPair(temporaryPair);
+  }
+};
+
+export const displayCards = (pairs) => {
+  const $fightersCardsContainer = document.querySelector(
+    '.fighters-cards-container'
+  );
+
+  pairs.forEach((fighter) => {
+    const $cardContainer = document.createElement('div');
+    const $frontCard = document.createElement('div');
+    const $backCard = document.createElement('div');
+    $frontCard.classList.add('front-card', 'active');
+    $backCard.classList.add('back-card');
+    $cardContainer.classList.add(
+      'card-container',
+      'overflow-clip',
+      'rounded-lg',
+      'box-border',
+      'h-48',
+      'w-48',
+      'border-4',
+      'bg-russianb',
+      'cursor-pointer'
+    );
+    const $frontCardImg = document.createElement('img');
+    const $backCardImg = document.createElement('img');
+    $frontCardImg.setAttribute('src', 'imgs/ssf2thdr_logo_thumb.jpg');
+    $frontCardImg.setAttribute('alt', 'SSF2THDR');
+    $frontCardImg.classList.add('object-fill', 'h-48', 'w-48');
+
+    $frontCard.appendChild($frontCardImg);
+
+    $backCardImg.setAttribute('src', `imgs/${fighter}.jpg`);
+    $backCardImg.setAttribute('alt', fighter);
+    $backCardImg.classList.add('object-fill', 'h-48', 'w-48');
+
+    $backCard.appendChild($backCardImg);
+
+    $cardContainer.appendChild($frontCard);
+    $cardContainer.appendChild($backCard);
+    $cardContainer.setAttribute('data-fighter', fighter);
+
+    $fightersCardsContainer.appendChild($cardContainer);
+  });
 };
 
 /*
