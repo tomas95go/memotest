@@ -259,7 +259,7 @@ const flipIn = ($card) => {
   const $frontCard = $card.childNodes[0];
   const $backCard = $card.childNodes[1];
   $frontCard.classList.add('hidden');
-  $backCard.classList.add(
+  $card.classList.add(
     'bg-amethyst',
     'animate__animated',
     'animate__flipInY',
@@ -271,7 +271,7 @@ const flipOut = ($card) => {
   const $frontCard = $card.childNodes[0];
   const $backCard = $card.childNodes[1];
   $frontCard.classList.remove('hidden');
-  $frontCard.classList.add(
+  $card.classList.add(
     'animate__animated',
     'animate__flipInY',
     'animate__delay-0.7s'
