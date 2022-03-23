@@ -5,6 +5,7 @@ window.onload = () => {
   displayCurrentLVL(memotest.lvl);
   displayPairs(memotest.pairs);
   formPairs(memotest.fighters, memotest.fighterPairs, memotest.cards);
+  shuffle(memotest.fighterPairs);
   displayCards(memotest.fighterPairs);
   const $cardContainer = document.querySelectorAll('.card-container');
   const player = getPlayerData();
@@ -12,12 +13,7 @@ window.onload = () => {
     card.addEventListener(
       'click',
       (event) => {
-        registerPlayerAction(
-          event,
-          memotest.fighterPairs,
-          player.temporaryPair,
-          player.correctPairs
-        );
+        registerPlayerAction(event, player, memotest);
       },
       false
     );
@@ -131,31 +127,79 @@ export const addTemporaryPairToCorrectPairs = (temporaryPair, correctPairs) => {
   return correctPairs;
 };
 
-export const registerPlayerAction = (
-  event,
-  fighterPairs,
-  temporaryPair,
-  correctPairs
-) => {
+export const registerPlayerAction = (event, player, memotest) => {
+  const { correctPairs, temporaryPair } = player;
+
+  const { fighterPairs } = memotest;
+
   const isValid = validateTemporaryPairLength(temporaryPair);
 
   const fighter = event.currentTarget.dataset.fighter;
 
-  if (isValid) {
+  const $fighterCard = document.querySelector(`[data-fighter="${fighter}"]`);
+
+  if (isValid && fighter) {
+    flipIn($fighterCard);
     addCardToTemporaryPair(fighter, temporaryPair);
-
     if (temporaryPair.length === 2) {
-      const isMatch = validateTemporaryPairMatch(temporaryPair);
-
+      const regex = /\-[0-9]/;
+      const modifiedTemporaryPair = temporaryPair.map((card) =>
+        card.replace(regex, '')
+      );
+      const isMatch = validateTemporaryPairMatch(modifiedTemporaryPair);
       if (isMatch) {
-        addTemporaryPairToCorrectPairs(temporaryPair);
+        addTemporaryPairToCorrectPairs(temporaryPair, correctPairs);
+        temporaryPair.forEach((card) =>
+          document
+            .querySelector(`[data-fighter="${card}"]`)
+            .removeAttribute('data-fighter')
+        );
+        resetPair(temporaryPair);
+        if (correctPairs.length === fighterPairs.length) {
+          resetPair(temporaryPair);
+          resetPair(fighterPairs);
+          resetPair(correctPairs);
+          incrementLevel(memotest);
+          resetCardsContainer();
+          displayCurrentLVL(memotest.lvl);
+          displayPairs(memotest.pairs);
+          formPairs(memotest.fighters, memotest.fighterPairs, memotest.cards);
+          shuffle(memotest.fighterPairs);
+          displayCards(memotest.fighterPairs);
+          const $cardContainer = document.querySelectorAll('.card-container');
+          $cardContainer.forEach((card) => {
+            card.addEventListener(
+              'click',
+              (event) => {
+                registerPlayerAction(event, player, memotest);
+              },
+              false
+            );
+          });
+        }
       } else {
+        temporaryPair.forEach((card, i) =>
+          setTimeout(
+            () => flipOut(document.querySelector(`[data-fighter="${card}"]`)),
+            1000
+          )
+        );
         resetPair(temporaryPair);
       }
     }
   } else {
     resetPair(temporaryPair);
   }
+};
+
+const resetCardsContainer = () => {
+  const $fightersCardsContainer = document.querySelectorAll(
+    '.fighters-cards-container > .card-container'
+  );
+
+  $fightersCardsContainer.forEach((card) => {
+    card.remove();
+  });
 };
 
 export const displayCards = (pairs) => {
@@ -167,7 +211,7 @@ export const displayCards = (pairs) => {
     const $cardContainer = document.createElement('div');
     const $frontCard = document.createElement('div');
     const $backCard = document.createElement('div');
-    $frontCard.classList.add('front-card', 'active');
+    $frontCard.classList.add('front-card');
     $backCard.classList.add('back-card');
     $cardContainer.classList.add(
       'card-container',
@@ -196,13 +240,50 @@ export const displayCards = (pairs) => {
 
     $cardContainer.appendChild($frontCard);
     $cardContainer.appendChild($backCard);
-    $cardContainer.setAttribute('data-fighter', fighter);
+
+    const $cardExists = document.querySelectorAll(
+      `[data-fighter="${fighter}-1"]`
+    ).length;
+
+    $cardContainer.setAttribute('data-fighter', `${fighter}-1`);
+
+    if ($cardExists) {
+      $cardContainer.setAttribute('data-fighter', `${fighter}-2`);
+    }
 
     $fightersCardsContainer.appendChild($cardContainer);
   });
 };
 
-/*
+const flipIn = ($card) => {
+  const $frontCard = $card.childNodes[0];
+  const $backCard = $card.childNodes[1];
+  $frontCard.classList.add('hidden');
+  $backCard.classList.add(
+    'bg-amethyst',
+    'animate__animated',
+    'animate__flipInY',
+    'animate__delay-0.7s'
+  );
+};
+
+const flipOut = ($card) => {
+  const $frontCard = $card.childNodes[0];
+  const $backCard = $card.childNodes[1];
+  $frontCard.classList.remove('hidden');
+  $frontCard.classList.add(
+    'animate__animated',
+    'animate__flipInY',
+    'animate__delay-0.7s'
+  );
+  $backCard.classList.remove(
+    'bg-amethyst',
+    'animate__animated',
+    'animate__flipInY',
+    'animate__delay-0.7s'
+  );
+};
+
 function shuffle(array) {
   let m = array.length;
   let t;
@@ -221,93 +302,3 @@ function shuffle(array) {
 
   return array;
 }
-
-shuffle(randomFighters);
-
-const toggle = (event) => {
-  const $cardContainer = event.currentTarget.childNodes;
-  const $cardContainerChildren = [...$cardContainer];
-  const $frontCard = $cardContainerChildren.find((card) =>
-    card.classList.contains(`front-card`)
-  );
-  const $backCard = $cardContainerChildren.find((card) =>
-    card.classList.contains(`back-card`)
-  );
-  const isActive = $frontCard.classList.contains('active');
-
-  isActive ? flipIn($frontCard, $backCard) : flipOut($frontCard, $backCard);
-};
-
-const flipIn = ($frontCard, $backCard) => {
-  $frontCard.classList.add('hidden');
-  $frontCard.classList.remove(
-    'active',
-    'animate__animated',
-    'animate__flipInY',
-    'animate__delay-0.5s'
-  );
-  $backCard.classList.add(
-    'bg-amethyst',
-    'animate__animated',
-    'animate__flipInY',
-    'animate__delay-0.5s'
-  );
-};
-
-const flipOut = ($frontCard, $backCard) => {
-  $frontCard.classList.remove('hidden');
-  $frontCard.classList.add(
-    'active',
-    'animate__animated',
-    'animate__flipInY',
-    'animate__delay-0.5s'
-  );
-  $backCard.classList.remove(
-    'bg-amethyst',
-    'animate__animated',
-    'animate__flipInY',
-    'animate__delay-0.5s'
-  );
-};
-
-const $fightersCardsContainer = document.querySelector(
-  '.fighters-cards-container'
-);
-
-for (let i = 0; i < randomFighters.length; i++) {
-  const $cardContainer = document.createElement('div');
-  const $frontCard = document.createElement('div');
-  const $backCard = document.createElement('div');
-  $frontCard.classList.add('front-card', 'active');
-  $backCard.classList.add('back-card');
-  $cardContainer.classList.add(
-    'overflow-clip',
-    'rounded-lg',
-    'box-border',
-    'h-48',
-    'w-48',
-    'border-4',
-    'bg-russianb',
-    'cursor-pointer'
-  );
-  const $frontCardImg = document.createElement('img');
-  const $backCardImg = document.createElement('img');
-  $frontCardImg.setAttribute('src', 'imgs/ssf2thdr_logo_thumb.jpg');
-  $frontCardImg.setAttribute('alt', 'SSF2THDR');
-  $frontCardImg.classList.add('object-fill', 'h-48', 'w-48');
-
-  $frontCard.appendChild($frontCardImg);
-
-  $backCardImg.setAttribute('src', `imgs/${randomFighters[i]}.jpg`);
-  $backCardImg.setAttribute('alt', randomFighters[i]);
-  $backCardImg.classList.add('object-fill', 'h-48', 'w-48');
-
-  $backCard.appendChild($backCardImg);
-
-  $cardContainer.appendChild($frontCard);
-  $cardContainer.appendChild($backCard);
-  $cardContainer.addEventListener('click', toggle, false);
-  $cardContainer.setAttribute('data-character', randomFighters[i]);
-
-  $fightersCardsContainer.appendChild($cardContainer);
-}*/
