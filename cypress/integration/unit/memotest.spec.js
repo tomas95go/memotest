@@ -1,5 +1,5 @@
 import {
-  getGameData,
+  getMemotestData,
   updateGameData,
   incrementLevel,
   getRandomFighter,
@@ -15,7 +15,7 @@ import {
 describe('Unit testing', function () {
   context('memotest.js', function () {
     it('Should return game data', function () {
-      const memotest = getGameData();
+      const memotest = getMemotestData();
 
       expect(memotest.lvl).to.eq(1);
       expect(memotest.cards).to.eq(8);
