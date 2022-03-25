@@ -1,14 +1,34 @@
 'use strict';
 
 window.onload = () => {
-  const memotest = getGameData();
+  startGame();
+};
+
+export const startGame = () => {
+  const gameData = getGameData();
+  const { memotest, player } = gameData;
+  initializeNewRound(memotest, player);
+};
+
+export const getGameData = () => {
+  const memotest = getMemotestData();
+  const player = getPlayerData();
+
+  const gameData = {
+    memotest,
+    player,
+  };
+
+  return gameData;
+};
+
+export const initializeNewRound = (memotest, player) => {
   displayCurrentLVL(memotest.lvl);
   displayPairs(memotest.pairs);
   formPairs(memotest.fighters, memotest.fighterPairs, memotest.cards);
   shuffle(memotest.fighterPairs);
   displayCards(memotest.fighterPairs);
   const $cardContainer = document.querySelectorAll('.card-container');
-  const player = getPlayerData();
   $cardContainer.forEach((card) => {
     card.addEventListener(
       'click',
@@ -20,7 +40,7 @@ window.onload = () => {
   });
 };
 
-export const getGameData = () => {
+export const getMemotestData = () => {
   const memotest = {
     lvl: 1,
     cards: 8,
@@ -161,21 +181,7 @@ export const registerPlayerAction = (event, player, memotest) => {
           resetPair(correctPairs);
           incrementLevel(memotest);
           resetCardsContainer();
-          displayCurrentLVL(memotest.lvl);
-          displayPairs(memotest.pairs);
-          formPairs(memotest.fighters, memotest.fighterPairs, memotest.cards);
-          shuffle(memotest.fighterPairs);
-          displayCards(memotest.fighterPairs);
-          const $cardContainer = document.querySelectorAll('.card-container');
-          $cardContainer.forEach((card) => {
-            card.addEventListener(
-              'click',
-              (event) => {
-                registerPlayerAction(event, player, memotest);
-              },
-              false
-            );
-          });
+          initializeNewRound(memotest, player);
         }
       } else {
         temporaryPair.forEach((card, i) =>
