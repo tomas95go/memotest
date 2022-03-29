@@ -263,7 +263,6 @@ export const displayCards = (pairs) => {
 
 const flipIn = ($card) => {
   const $frontCard = $card.childNodes[0];
-  const $backCard = $card.childNodes[1];
   $frontCard.classList.add('hidden');
   $card.classList.add(
     'bg-amethyst',
@@ -275,15 +274,8 @@ const flipIn = ($card) => {
 
 const flipOut = ($card) => {
   const $frontCard = $card.childNodes[0];
-  const $backCard = $card.childNodes[1];
   $frontCard.classList.remove('hidden');
-  $card.classList.add(
-    'animate__animated',
-    'animate__flipInY',
-    'animate__delay-0.7s'
-  );
-  $backCard.classList.remove(
-    'bg-amethyst',
+  $card.classList.remove(
     'animate__animated',
     'animate__flipInY',
     'animate__delay-0.7s'
