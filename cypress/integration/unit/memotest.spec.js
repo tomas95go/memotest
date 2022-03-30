@@ -1,14 +1,13 @@
 import {
   getMemotestData,
-  updateGameData,
   incrementLevel,
   getRandomFighter,
   formPairs,
   getPlayerData,
-  validateTemporaryPairLength,
   addCardToTemporaryPair,
   resetPair,
-  validateTemporaryPairMatch,
+  checkCardsMatch,
+  checkCardsDuplication,
   addTemporaryPairToCorrectPairs,
 } from '/memotest';
 
@@ -20,20 +19,6 @@ describe('Unit testing', function () {
       expect(memotest.lvl).to.eq(1);
       expect(memotest.cards).to.eq(8);
       expect(memotest.pairs).to.eq(4);
-    });
-
-    it('Should update game data', function () {
-      const memotest = {
-        lvl: 1,
-        cards: 8,
-        pairs: 4,
-      };
-
-      updateGameData(memotest, 2, 12, 6);
-
-      expect(memotest.lvl).to.eq(2);
-      expect(memotest.cards).to.eq(12);
-      expect(memotest.pairs).to.eq(6);
     });
 
     it('Should increment level', function () {
@@ -119,14 +104,6 @@ describe('Unit testing', function () {
       expect(player.temporaryPair).to.have.lengthOf(0);
     });
 
-    it('Should validate temporary pair length', function () {
-      const temporaryPair = ['Cammy', 'Cammy'];
-
-      const isValid = validateTemporaryPairLength(temporaryPair);
-
-      expect(isValid).to.be.false;
-    });
-
     it('Should add a card to the temporary pair', function () {
       const temporaryPair = [];
 
@@ -143,12 +120,20 @@ describe('Unit testing', function () {
       expect(temporaryPair).to.have.lengthOf(0);
     });
 
-    it('Should check match of a pair', function () {
+    it('Should check match of cards', function () {
       const temporaryPair = ['Sagat', 'Sagat'];
 
-      const isValid = validateTemporaryPairMatch(temporaryPair);
+      const isMatch = checkCardsMatch(temporaryPair);
 
-      expect(isValid).to.be.true;
+      expect(isMatch).to.be.true;
+    });
+
+    it('Should check for duplicate cards', function () {
+      const temporaryPair = ['Ryu-1', 'Ryu-1'];
+
+      const isDuplicated = checkCardsDuplication(temporaryPair);
+
+      expect(isDuplicated).to.be.true;
     });
 
     it('Should merge 2 arrays', function () {
