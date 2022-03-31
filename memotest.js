@@ -25,13 +25,13 @@ export const getGameData = () => {
 export const initializeNewRound = (memotest, player) => {
   resetCardsContainer();
   resetPair(player.temporaryPair);
-  resetPair(memotest.fighterPairs);
+  resetPair(memotest.totalPairs);
   resetPair(player.correctPairs);
   displayCurrentLVL(memotest.lvl);
   displayPairs(memotest.pairs);
-  formPairs(memotest.fighters, memotest.fighterPairs, memotest.cards);
-  shuffle(memotest.fighterPairs);
-  displayCards(memotest.fighterPairs);
+  formPairs(memotest.fighters, memotest.totalPairs, memotest.cards);
+  shuffle(memotest.totalPairs);
+  displayCards(memotest.totalPairs);
   const $cardContainer = document.querySelectorAll('.card-container');
   $cardContainer.forEach((card) => {
     card.addEventListener(
@@ -68,7 +68,7 @@ export const getMemotestData = () => {
       'Vega',
       'Zangief',
     ],
-    fighterPairs: [],
+    totalPairs: [],
   };
   return memotest;
 };
@@ -96,17 +96,17 @@ export const getRandomFighter = (fighters) => {
   return randomFighters;
 };
 
-export const formPairs = (fighters, fighterPairs, cardsQty) => {
-  while (fighterPairs.length < cardsQty) {
+export const formPairs = (fighters, totalPairs, cardsQty) => {
+  while (totalPairs.length < cardsQty) {
     const randomFighter = getRandomFighter(fighters);
-    const isPresent = fighterPairs.find((fighter) => fighter === randomFighter);
+    const isPresent = totalPairs.find((fighter) => fighter === randomFighter);
     if (!isPresent) {
-      fighterPairs.push(randomFighter);
-      fighterPairs.push(randomFighter);
+      totalPairs.push(randomFighter);
+      totalPairs.push(randomFighter);
     }
   }
 
-  return fighterPairs;
+  return totalPairs;
 };
 
 export const getPlayerData = () => {
@@ -162,7 +162,7 @@ export const addTemporaryPairToCorrectPairs = (temporaryPair, correctPairs) => {
 export const registerPlayerAction = (event, player, memotest) => {
   const { correctPairs, temporaryPair } = player;
 
-  const { fighterPairs } = memotest;
+  const { totalPairs } = memotest;
 
   const fighter = event.currentTarget.dataset.fighter;
 
@@ -191,7 +191,7 @@ export const registerPlayerAction = (event, player, memotest) => {
     resetPair(temporaryPair);
   }
 
-  if (correctPairs.length === fighterPairs.length) {
+  if (correctPairs.length === totalPairs.length) {
     incrementLevel(memotest);
     setTimeout(() => {
       initializeNewRound(memotest, player);
